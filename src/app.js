@@ -22,11 +22,11 @@ class Innlogging extends React.Component {
           <tbody>
             <tr>
               <td>Brukernavn: </td>
-              <td><input type="text" ref="unInput" /></td>
+              <td><input type="text" ref="unInput" value="testson@hotmail.com" /></td>
             </tr>
             <tr>
               <td>Passord: </td>
-              <td><input type="password" ref="pwInput" /> </td>
+              <td><input type="password" ref="pwInput" value="passord" /> </td>
               <td><button ref="innlogginButton">Logg inn</button></td>
             </tr>
           </tbody>
@@ -42,7 +42,9 @@ class Innlogging extends React.Component {
       loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login) => {
         console.log(login)
         if (login) {
-          console.log('Test')
+          console.log('Innlogget')
+        } else {
+          console.log('Feil brukernavn eller passord');
         }
       })
     }
