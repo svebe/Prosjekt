@@ -1,93 +1,66 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Link, HashRouter, Switch, Route } from 'react-router-dom';
-import { customerService } from './services';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Link, HashRouter, Switch, Route } from 'react-router-dom'
+import { customerService, loginService } from './services'
 
 class Menu extends React.Component {
-  render() {
+  render () {
     return (
       <div>
-        Menu: <Link to='/'>Customers</Link>
+        Menu: <Link to='/'>Innlogging</Link>
       </div>
-    );
+    )
   }
 }
 
 // Component that shows a list of all the customers
-class CustomerList extends React.Component {
-  constructor() {
-    super(); // Call React.Component constructor
-
-    this.customers = [];
-  }
-
-  render() {
-    let listItems = [];
-    for(let customer of this.customers) {
-      listItems.push(
-        <li key={customer.id}>
-          <Link to={'/customer/' + customer.id}>{customer.firstName}</Link>
-
-          <button onClick={() => {
-            customerService.removeCustomer(customer.id, () => {
-              customerService.getCustomers((result) => {
-                this.customers = result;
-                this.forceUpdate();
-            });
-            });
-          }}>Slett</button>
-
-        </li>
-      );
-    }
-
+class Innlogging extends React.Component {
+  render () {
     return (
       <div>
-        Customers:
-        <ul>{listItems}</ul>
-        New customer:
-        <div>
-          Name: <input type='text' ref='newName' />
-          City: <input type='text' ref='newCity' />
-          <button ref='newCustomerButton'>Add</button>
-        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td>Brukernavn: </td>
+              <td><input type="text" ref="unInput" /></td>
+            </tr>
+            <tr>
+              <td>Passord: </td>
+              <td><input type="password" ref="pwInput" /> </td>
+              <td><button ref="innlogginButton">Logg inn</button></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    );
+
+    )
   }
 
   // Called after render() is called for the first time
-  componentDidMount() {
-    customerService.getCustomers((result) => {
-      this.customers = result;
-      this.forceUpdate(); // Rerender component with updated data
-    });
-
-    this.refs.newCustomerButton.onclick = () => {
-      customerService.addCustomer(this.refs.newName.value, this.refs.newCity.value, (result) => {
-        this.refs.newName.value = "";
-        this.refs.newCity.value = "";
-
-        customerService.getCustomers((result) => {
-          this.customers = result;
-          this.forceUpdate(); // Rerender component with updated data
-        });
-      });
-    };
-  }
+  componentDidMount () {
+    this.refs.innlogginButton.onclick = () => {
+      loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login) => {
+        console.log(login)
+        if (login) {
+          console.log('Test')
+        }
+      })
+    }
+  };
 }
 
 // Detailed view of one customer
 class CustomerDetails extends React.Component {
-  constructor(props) {
-    super(props); // Call React.Component constructor
+  constructor (props) {
+    super(props) // Call React.Component constructor
 
-    this.customer = {};
+    this.customer = {}
 
     // The customer id from path is stored in props.match.params.customerId
-    this.id = props.match.params.customerId;
+    this.id = props.match.params.customerId
   }
 
-  render() {
+  render () {
     return (
       <div>
         Customer:
@@ -98,29 +71,26 @@ class CustomerDetails extends React.Component {
         New name: <input type="text" ref='editName' /> <br />
         New city: <input type="text" ref='editCity' />
         <button ref='editCustomerButton'>Edit</button>
-        </div>
-    );
+      </div>
+    )
   }
 
   // Called after render() is called for the first time
-  componentDidMount() {
+  componentDidMount () {
     // The customer id from path is stored in props.match.params.customerId
     customerService.getCustomer(this.id, (result) => {
-      this.customer = result;
-      this.forceUpdate(); // Rerender component with updated data
-
-    });
-
+      this.customer = result
+      this.forceUpdate() // Rerender component with updated data
+    })
 
     this.refs.editCustomerButton.onclick = () => {
       customerService.editCustomer(this.refs.editName.value, this.refs.editCity.value, this.id, () => {
         customerService.getCustomer(this.id, (result) => {
-          this.customer = result;
-          this.forceUpdate();
-        });
-    });
-  };
-
+          this.customer = result
+          this.forceUpdate()
+        })
+      })
+    }
   }
 }
 
@@ -135,9 +105,9 @@ ReactDOM.render((
     <div>
       <Menu />
       <Switch>
-        <Route exact path='/' component={CustomerList} />
+        <Route exact path='/' component={Innlogging} />
         <Route exact path='/customer/:customerId' component={CustomerDetails} />
       </Switch>
     </div>
   </HashRouter>
-), document.getElementById('root'));
+), document.getElementById('root'))

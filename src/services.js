@@ -71,8 +71,23 @@ class CustomerService {
 
 }
 
+class LoginService {
+  checkLogin (brukernavn, passord, callback) {
+    connection.query('SELECT * from medlem WHERE epost = ?', [brukernavn], (error, result) => {
+      if (error) throw error;
+      let login = false
+      if (result[0].passord === passord) {
+        login = true
+      } else {
+        login = false
+      }
 
+      callback(login);
+    })
+  }
+}
 
-let customerService = new CustomerService();
+let customerService = new CustomerService()
+let loginService = new LoginService()
 
-export { customerService };
+export { customerService, loginService };
