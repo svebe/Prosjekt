@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import { Link, HashRouter, Switch, Route } from 'react-router-dom'
 import { customerService, loginService } from './services'
 
+let brukerid = null
+
 class Menu extends React.Component {
   render () {
     return (
@@ -22,11 +24,11 @@ class Innlogging extends React.Component {
           <tbody>
             <tr>
               <td>Brukernavn: </td>
-              <td><input type="text" ref="unInput" value="testson@hotmail.com" /></td>
+              <td><input type="text" ref="unInput" defaultValue="testson@hotmail.com" /></td>
             </tr>
             <tr>
               <td>Passord: </td>
-              <td><input type="password" ref="pwInput" value="passord" /> </td>
+              <td><input type="password" ref="pwInput" defaultValue="passord" /> </td>
               <td><button ref="innlogginButton">Logg inn</button></td>
             </tr>
           </tbody>
@@ -39,12 +41,12 @@ class Innlogging extends React.Component {
   // Called after render() is called for the first time
   componentDidMount () {
     this.refs.innlogginButton.onclick = () => {
-      loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login) => {
-        console.log(login)
+      loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login, medlem_nr) => {
         if (login) {
           console.log('Innlogget')
+          brukerid = medlem_nr
         } else {
-          console.log('Feil brukernavn eller passord');
+          console.log('Feil brukernavn eller passord')
         }
       })
     }
