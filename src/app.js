@@ -9,7 +9,7 @@ class Menu extends React.Component {
   render () {
     return (
       <div>
-        Menu: <Link to='/'>Innlogging</Link>
+        Menu: <Link to='/'>Innlogging</Link> <Link to='/start'>Start</Link>
       </div>
     )
   }
@@ -45,12 +45,30 @@ class Innlogging extends React.Component {
         if (login) {
           console.log('Innlogget')
           brukerid = medlem_nr
+          console.log(brukerid)
+          this.props.history.push('/start')
         } else {
           console.log('Feil brukernavn eller passord')
         }
       })
     }
   };
+}
+
+class StartSide extends React.Component {
+  constructor () {
+    super()
+  }
+  render () {
+    return (
+      <div>
+        <h1>Dette er en startside</h1>
+      </div>
+    )
+  }
+  componentDidMount () {
+
+  }
 }
 
 // Detailed view of one customer
@@ -111,6 +129,7 @@ ReactDOM.render((
       <Switch>
         <Route exact path='/' component={Innlogging} />
         <Route exact path='/customer/:customerId' component={CustomerDetails} />
+        <Route exact path='/start' component={StartSide} />
       </Switch>
     </div>
   </HashRouter>

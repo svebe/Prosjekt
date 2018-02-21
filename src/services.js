@@ -76,9 +76,10 @@ class LoginService {
     connection.query('SELECT * from medlem WHERE epost = ?', [brukernavn], (error, result) => {
       if (error) throw error;
       let login = false
+      let medlem_nr = null
       if (result[0].passord === passord) {
         login = true
-        let brukerid = result[0].medlem_nr;
+        medlem_nr = result[0].medlem_nr;
       } else {
         login = false
       }
