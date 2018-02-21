@@ -78,11 +78,12 @@ class LoginService {
       let login = false
       if (result[0].passord === passord) {
         login = true
+        let brukerid = result[0].medlem_nr;
       } else {
         login = false
       }
 
-      callback(login);
+      callback(login, medlem_nr);
     })
   }
 }
