@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link, HashRouter, Switch, Route } from 'react-router-dom'
-import { customerService, loginService } from './services'
+import { userService, loginService } from './services'
 
 let brukerid = null
 
@@ -33,6 +33,8 @@ class Innlogging extends React.Component {
             </tr>
           </tbody>
         </table>
+        <button ref="newPasswordButton">Glemt Passord</button>
+        <button ref="newUserButton">Ny bruker</button>
       </div>
 
     )
@@ -41,10 +43,10 @@ class Innlogging extends React.Component {
   // Called after render() is called for the first time
   componentDidMount () {
     this.refs.innlogginButton.onclick = () => {
-      loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login, medlem_nr) => {
+      loginService.checkLogin(this.refs.unInput.value, this.refs.pwInput.value, (login, medlemsnr) => {
         if (login) {
           console.log('Innlogget')
-          brukerid = medlem_nr
+          brukerid = medlemsnr
           console.log(brukerid)
           this.props.history.push('/start')
         } else {
@@ -52,13 +54,75 @@ class Innlogging extends React.Component {
         }
       })
     }
+    this.refs.newPasswordButton.onclick = () => {
+      this.props.history.push('/nyttpassord')
+    }
+    this.refs.newUserButton.onclick = () => {
+      this.props.history.push('/nybruker')
+    }
   };
 }
 
-class StartSide extends React.Component {
-  constructor () {
-    super()
+class NyBruker extends React.Component {
+  render () {
+    return (
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td>Navn: </td>
+              <td><input type="text" ref="navnInput" /></td>
+            </tr>
+            <tr>
+              <td>Epost: </td>
+              <td><input type="text" ref="epostInput" /></td>
+            </tr>
+            <tr>
+              <td>Medlemsnr: </td>
+              <td><input type="number" ref="medlemsnrInput" /></td>
+            </tr>
+            <tr>
+              <td>Telefonnummer: </td>
+              <td><input type="number" ref="tlfInput" /></td>
+            </tr>
+            <tr>
+              <td>Adresse: </td>
+              <td><input type="text" ref="adresseInput" /></td>
+            </tr>
+            <tr>
+              <td>Passord: </td>
+              <td><input type="password" ref="passwordInput1" /></td>
+            </tr>
+            <tr>
+              <td>Gjenta passord: </td>
+              <td><input type="password" ref="passwordInput2" /> </td>
+            </tr>
+          </tbody>
+        </table>
+        <button ref="createuserButton">Ferdig</button>
+      </div>
+    )
   }
+  componentDidMount () {
+    if (this.refs.passwordInput1.value === this.refs.passwordInput2) {
+      userService.addUser(this.refs.navnInput.value, this.refs.epostInput.value, this.refs.medlemsnr.value, this.refs.tlfInput.value, this.refs.passwordInput1.value, () => {
+        console.log('User added')
+      })
+    }
+  }
+}
+
+class NyttPassord extends React.Component {
+  render () {
+    return (
+      <div>
+
+      </div>
+    )
+  }
+}
+
+class StartSide extends React.Component {
   render () {
     return (
       <div>
@@ -70,7 +134,7 @@ class StartSide extends React.Component {
 
   }
 }
-
+/*
 // Detailed view of one customer
 class CustomerDetails extends React.Component {
   constructor (props) {
@@ -115,7 +179,7 @@ class CustomerDetails extends React.Component {
     }
   }
 }
-
+*/
 // The Route-elements define the different pages of the application
 // through a path and which component should be used for the path.
 // The path can include a variable, for instance
@@ -128,8 +192,10 @@ ReactDOM.render((
       <Menu />
       <Switch>
         <Route exact path='/' component={Innlogging} />
-        <Route exact path='/customer/:customerId' component={CustomerDetails} />
         <Route exact path='/start' component={StartSide} />
+        <Route exact path='/nybruker' component={NyBruker} />
+        <Route exact path='/nyttpassord' component={NyttPassord} />
+
       </Switch>
     </div>
   </HashRouter>
